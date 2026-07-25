@@ -87,3 +87,9 @@ wcwidth==0.2.13
 webencodings==0.5.1
 xxhash==3.5.0
 yarl==1.12.1
+fastapi>=0.100.0
+uvicorn>=0.22.0
+pydantic>=2.0.0
+python-multipart>=0.0.6
+pytest>=7.0.0
+httpx>=0.24.0

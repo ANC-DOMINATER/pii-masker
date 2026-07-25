@@ -65,24 +65,47 @@ pip install -r requirements.txt
 
 ## 🚀 Quick Start
 
-1. Change to the `pii-masker` directory:
-   ```bash
-   cd pii-masker
+### Python Library Usage
+```python
+from pii_masker import PIIMasker
 
-2. Use the following code to get started:
-   ```python
-   from model import PIIMasker
-    
-   # Initialize the PIIMasker
-   masker = PIIMasker()
-    
-   # Mask PII in your text
-   text = "John Doe lives at 1234 Elm St."
-   masked_text, pii_dict = masker.mask_pii(text)
-    
-   print(masked_text)
-   # Output: "[NAME] lives at [ADDRESS]"
-   ```
+# Initialize PIIMasker
+masker = PIIMasker()
+
+# Mask PII in text
+text = "John Doe (SSN: 123-45-6789) lives at 1234 Elm St. Email: john@example.com"
+masked_text, pii_dict = masker.mask_pii(text)
+
+print(masked_text)
+# Output: "John Doe (SSN: [SSN]) lives at [STREET_ADDRESS]. Email: [EMAIL]"
+```
+
+### ⚡ FastAPI Server & Interactive Web Dashboard
+
+Launch the high-performance FastAPI server and web dashboard:
+
+```bash
+# Option 1: Using console script
+pii-masker-server --port 8000
+
+# Option 2: Using python module
+python -m pii_masker.api.main --port 8000
+
+# Option 3: Using uvicorn directly
+uvicorn pii_masker.api.app:app --reload --port 8000
+```
+
+Once launched:
+- **Interactive Web Dashboard**: Open [http://localhost:8000](http://localhost:8000)
+- **OpenAPI / Swagger UI**: Open [http://localhost:8000/docs](http://localhost:8000/docs)
+- **ReDoc API Documentation**: Open [http://localhost:8000/redoc](http://localhost:8000/redoc)
+
+#### REST Endpoints
+- `POST /api/v1/mask`: Mask single text string with entity breakdown
+- `POST /api/v1/mask/batch`: Batch process multiple text strings
+- `POST /api/v1/mask/file`: Upload document file (.txt, .log, .csv, .json) for anonymization
+- `GET /api/v1/health`: System health & active rules
+- `GET /api/v1/entities`: List all supported PII categories
 
 ## 🔍 How It Works
 

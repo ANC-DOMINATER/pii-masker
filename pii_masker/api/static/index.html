@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PII Masker AI - High-Precision Data Anonymization Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0b0f19;
+            --bg-card: rgba(18, 26, 43, 0.7);
+            --bg-card-hover: rgba(26, 38, 64, 0.8);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(99, 102, 241, 0.3);
+            
+            --primary: #6366f1;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+            --accent-cyan: #06b6d4;
+            --accent-emerald: #10b981;
+            --accent-rose: #f43f5e;
+            --accent-amber: #f59e0b;
+            --accent-violet: #8b5cf6;
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+            background-attachment: fixed;
+            line-height: 1.6;
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .brand-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            font-weight: 600;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--border-color);
+        }
+
+        .nav-btn.active {
+            border-color: var(--primary);
+            color: #818cf8;
+        }
+
+        .docs-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .docs-link:hover {
+            background: rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+        }
+
+        .main-container {
+            max-width: 1300px;
+            margin: 32px auto;
+            padding: 0 24px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 24px;
+            transition: border-color 0.2s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Playground Grid */
+        .playground-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .playground-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .panel-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-main);
+        }
+
+        .sample-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .pill-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pill-btn:hover {
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+
+        textarea {
+            width: 100%;
+            height: 280px;
+            background: rgba(11, 15, 25, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+        }
+
+        .controls-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        select {
+            background: rgba(11, 15, 25, 0.9);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Output Box */
+        .output-box {
+            width: 100%;
+            height: 280px;
+            background: rgba(11, 15, 25, 0.7);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Entity Badges */
+        .entity-tag {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            margin: 0 2px;
+        }
+
+        .tag-SSN { background: rgba(245, 158, 11, 0.25); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.5); }
+        .tag-EMAIL { background: rgba(6, 182, 212, 0.25); color: #38bdf8; border: 1px solid rgba(6, 182, 212, 0.5); }
+        .tag-PHONE_NUM { background: rgba(16, 185, 129, 0.25); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.5); }
+        .tag-CREDIT_CARD { background: rgba(244, 63, 94, 0.25); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.5); }
+        .tag-STREET_ADDRESS { background: rgba(139, 92, 246, 0.25); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.5); }
+        .tag-IP_ADDRESS { background: rgba(99, 102, 241, 0.25); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.5); }
+        .tag-URL_PERSONAL { background: rgba(236, 72, 153, 0.25); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.5); }
+        .tag-API_KEY { background: rgba(225, 29, 72, 0.3); color: #fda4af; border: 1px solid rgba(225, 29, 72, 0.6); }
+        .tag-USERNAME { background: rgba(168, 85, 247, 0.25); color: #e879f9; border: 1px solid rgba(168, 85, 247, 0.5); }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .stat-lbl {
+            font-size: 0.78rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+
+        /* Dropzone */
+        .dropzone {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 48px 24px;
+            text-align: center;
+            background: rgba(11, 15, 25, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dropzone:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .drop-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 32px 24px;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="#" class="brand">
+                <div class="brand-icon">🔒</div>
+                <div class="brand-title">PII Masker <span class="brand-badge">API v1.0</span></div>
+            </a>
+            <div class="header-nav">
+                <button class="nav-btn active" onclick="switchTab('single')">Playground</button>
+                <button class="nav-btn" onclick="switchTab('batch')">Batch Processor</button>
+                <button class="nav-btn" onclick="switchTab('file')">File Anonymizer</button>
+                <a href="/docs" target="_blank" class="docs-link">
+                    <span>OpenAPI Docs</span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="hero-section">
+            <h1 class="hero-title">AI-Powered PII Masking & Detection</h1>
+            <p class="hero-subtitle">High-precision detection and anonymization of sensitive personal data powered by DeBERTa-v3 and rule-based pattern engines.</p>
+        </div>
+
+        <!-- Single Text Playground Tab -->
+        <div id="tab-single" class="tab-content active">
+            <div class="glass-card">
+                <div class="playground-grid">
+                    <!-- Left: Input -->
+                    <div>
+                        <div class="panel-header">
+                            <div class="panel-title">📝 Input Document</div>
+                        </div>
+                        <div class="sample-pills">
+                            <span style="font-size:0.8rem; color:var(--text-dim); align-self:center;">Samples:</span>
+                            <button class="pill-btn" onclick="loadSample('user')">User Profile</button>
+                            <button class="pill-btn" onclick="loadSample('medical')">Medical Record</button>
+                            <button class="pill-btn" onclick="loadSample('dev')">Developer Log</button>
+                        </div>
+                        <textarea id="inputText" placeholder="Paste or type text containing PII data here..."></textarea>
+                    </div>
+
+                    <!-- Right: Output -->
+                    <div>
+                        <div class="panel-header">
+                            <div class="panel-title">✨ Masked Output</div>
+                            <button class="pill-btn" onclick="copyOutput()" id="copyBtn">📋 Copy</button>
+                        </div>
+                        <div style="height: 33px;"></div> <!-- Spacer -->
+                        <div id="outputText" class="output-box">Masked text will appear here...</div>
+                    </div>
+                </div>
+
+                <div class="controls-bar">
+                    <div class="option-group">
+                        <label for="maskFormat">Mask Token Format:</label>
+                        <select id="maskFormat">
+                            <option value="[{TYPE}]">Categorized Tag ([SSN], [EMAIL])</option>
+                            <option value="[REDACTED]">Redacted ([REDACTED])</option>
+                            <option value="***">Asterisks (***)</option>
+                            <option value="&lt;ANONYMIZED_{TYPE}&gt;">Angle Brackets (&lt;ANONYMIZED_TYPE&gt;)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn-primary" onclick="processMask()">
+                        <span>⚡ Mask PII Now</span>
+                    </button>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-grid" id="statsGrid" style="display:none;">
+                    <div class="stat-card">
+                        <div class="stat-val" id="statEntities">0</div>
+                        <div class="stat-lbl">PII Entities Masked</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="statTime">0 ms</div>
+                        <div class="stat-lbl">Latency</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-val" id="statTypes">0</div>
+                        <div class="stat-lbl">Entity Types Found</div>
+                    </div>
+                </div>
+
+                <!-- Entity Breakdown Badges -->
+                <div id="entityBreakdown" style="margin-top: 20px; display: none;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">Detected PII Entities:</div>
+                    <div id="breakdownTags" style="display: flex; gap: 8px; flex-wrap: wrap;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Processor Tab -->
+        <div id="tab-batch" class="tab-content">
+            <div class="glass-card">
+                <div class="panel-header">
+                    <div class="panel-title">📦 Batch Text Anonymizer</div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Provide multiple text lines or JSON strings below to process them simultaneously in high-speed parallel mode.</p>
+                <textarea id="batchInput" style="height: 180px;" placeholder="Line 1: John Doe SSN is 123-45-6789&#10;Line 2: Email support at dev@company.org or call 555-123-4567"></textarea>
+                <div class="controls-bar">
+                    <div></div>
+                    <button class="btn-primary" onclick="processBatch()">⚡ Run Batch Anonymize</button>
+                </div>
+                <div id="batchOutput" class="output-box" style="height: 220px; margin-top: 16px; display: none;"></div>
+            </div>
+        </div>
+
+        <!-- File Anonymizer Tab -->
+        <div id="tab-file" class="tab-content">
+            <div class="glass-card">
+                <div class="panel-header">
+                    <div class="panel-title">📁 File Anonymizer Dropzone</div>
+                </div>
+                <div class="dropzone" onclick="document.getElementById('fileInput').click()">
+                    <div class="drop-icon">📄</div>
+                    <div style="font-size: 1.1rem; font-weight: 600; margin-bottom: 4px;">Click to select or drop document file here</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Supports .txt, .log, .csv, .json, .md files (up to 10MB)</div>
+                    <input type="file" id="fileInput" style="display:none;" onchange="handleFileUpload(event)">
+                </div>
+                <div id="fileResult" class="output-box" style="height: 250px; margin-top: 20px; display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>PII Masker Service &bull; DeBERTa-v3 & Regex AI Engine &bull; HydroX AI Open-Source</p>
+    </footer>
+
+    <script>
+        const samples = {
+            user: "Customer John Doe (SSN: 123-45-6789) resides at 1234 Elm Street, Austin TX. Contact him at john.doe@email.com or +1 (555) 234-5678. User handle is @johndoe_99.",
+            medical: "Patient Sarah Connor ID-883921 tested positive. Emergency contact: 555-998-1122. Address: 500 5th Avenue, New York. Primary email: s.connor@healthnet.org.",
+            dev: "Server deployment log [INFO] API authentication failed for user @dev_admin. IP Address: 192.168.1.105. Secret Token: sk-proj-99812739182371982739182. Repo: https://github.com/company/secret"
+        };
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+        }
+
+        function loadSample(key) {
+            document.getElementById('inputText').value = samples[key];
+            processMask();
+        }
+
+        async function processMask() {
+            const text = document.getElementById('inputText').value;
+            const maskFormat = document.getElementById('maskFormat').value;
+            const outputBox = document.getElementById('outputText');
+
+            if (!text.trim()) {
+                outputBox.innerText = "Please enter some text to mask.";
+                return;
+            }
+
+            outputBox.innerText = "Processing...";
+
+            try {
+                const response = await fetch('/api/v1/mask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: text, mask_format: maskFormat })
+                });
+
+                const data = await response.json();
+                outputBox.innerText = data.masked_text;
+
+                // Update Stats
+                document.getElementById('statsGrid').style.display = 'grid';
+                document.getElementById('statEntities').innerText = data.entities.length;
+                document.getElementById('statTime').innerText = `${data.processing_time_ms} ms`;
+                document.getElementById('statTypes').innerText = Object.keys(data.pii_dict).length;
+
+                // Breakdown tags
+                const breakdownContainer = document.getElementById('entityBreakdown');
+                const breakdownTags = document.getElementById('breakdownTags');
+                breakdownTags.innerHTML = '';
+
+                if (data.entities.length > 0) {
+                    breakdownContainer.style.display = 'block';
+                    for (const [entityType, values] of Object.entries(data.pii_dict)) {
+                        const tag = document.createElement('span');
+                        tag.className = `entity-tag tag-${entityType}`;
+                        tag.innerText = `${entityType}: ${values.length}`;
+                        breakdownTags.appendChild(tag);
+                    }
+                } else {
+                    breakdownContainer.style.display = 'none';
+                }
+            } catch (err) {
+                outputBox.innerText = `Error: ${err.message}`;
+            }
+        }
+
+        async function processBatch() {
+            const raw = document.getElementById('batchInput').value;
+            const lines = raw.split('\n').filter(l => l.trim().length > 0);
+            const batchOutput = document.getElementById('batchOutput');
+
+            if (lines.length === 0) return;
+
+            batchOutput.style.display = 'block';
+            batchOutput.innerText = "Processing batch...";
+
+            try {
+                const response = await fetch('/api/v1/mask/batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texts: lines })
+                });
+
+                const data = await response.json();
+                let resultStr = `Processed ${data.total_processed} items in ${data.total_time_ms} ms\n\n`;
+                data.results.forEach((r, idx) => {
+                    resultStr += `[Item ${idx + 1}] -> ${r.masked_text}\n`;
+                });
+                batchOutput.innerText = resultStr;
+            } catch (err) {
+                batchOutput.innerText = `Error: ${err.message}`;
+            }
+        }
+
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const fileResult = document.getElementById('fileResult');
+            fileResult.style.display = 'block';
+            fileResult.innerText = `Uploading and anonymizing ${file.name}...`;
+
+            try {
+                const response = await fetch('/api/v1/mask/file', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                let text = `File: ${data.filename} (${data.original_size_bytes} bytes)\n`;
+                text += `Entities Found: ${data.entities_found_count} | Processing Time: ${data.processing_time_ms} ms\n\n`;
+                text += `--- MASKED CONTENT ---\n${data.masked_text}`;
+                fileResult.innerText = text;
+            } catch (err) {
+                fileResult.innerText = `Error processing file: ${err.message}`;
+            }
+        }
+
+        function copyOutput() {
+            const outputText = document.getElementById('outputText').innerText;
+            navigator.clipboard.writeText(outputText);
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = "✓ Copied!";
+            setTimeout(() => btn.innerText = "📋 Copy", 2000);
+        }
+
+        // Auto load sample on start
+        window.onload = () => loadSample('user');
+    </script>
+</body>
+</html>

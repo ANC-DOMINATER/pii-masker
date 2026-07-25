@@ -8,7 +8,16 @@ setup(
         "torch",
         "transformers",
         "numpy",
+        "fastapi",
+        "uvicorn",
+        "pydantic",
+        "python-multipart",
     ],
+    entry_points={
+        "console_scripts": [
+            "pii-masker-server=pii_masker.api.main:main",
+        ],
+    },
     author="Xuying LI",
     author_email="xuyingl@hydrox.ai",
     description="A package for masking Personally Identifiable Information (PII) in text.",
